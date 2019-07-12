@@ -1,0 +1,59 @@
+package test;
+
+import java.util.List;
+import java.util.Set;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+
+	@RunWith(SpringJUnit4ClassRunner.class)
+	@ContextConfiguration(locations="classpath:spring/applicationContext-redis.xml")
+	public class TestHash {
+		
+		@Autowired
+		private RedisTemplate redisTemplate;
+		
+		
+		//（1）存入值 
+	 	@Test 
+	 	public void testSetValue(){ 
+	 	 	redisTemplate.boundHashOps("namehash").put("a", "唐僧"); 
+	 	 	redisTemplate.boundHashOps("namehash").put("b", "悟空"); 
+	 	 	redisTemplate.boundHashOps("namehash").put("c", "八戒"); 
+	 	 	redisTemplate.boundHashOps("namehash").put("d", "沙僧");  	
+	 	} 
+	 
+	//（2）提取所有的 KEY 
+	 	@Test 
+	 	public void testGetKeys(){ 
+	 	 	Set s = redisTemplate.boundHashOps("namehash").keys();  	 
+	 	 	System.out.println(s);  	 
+	 	} 
+	 
+	//运行结果： [a, b, c, d] 
+	//（3）提取所有的值 
+	 	@Test 
+	 	public void testGetValues(){ 
+	 	 	List values = redisTemplate.boundHashOps("namehash").values(); 
+	 	 	System.out.println(values);  	 
+	 	} 
+	//运行结果： [唐僧, 悟空, 八戒, 沙僧] 
+	//（4）根据 KEY 提取值 
+	 	@Test 
+	 	public void testGetValueByKey(){ 
+	 	 	Object object = redisTemplate.boundHashOps("namehash").get("b"); 
+	 	 	System.out.println(object); 
+	 	} 	
+	//运行结果：悟空 
+	//（5）根据 KEY 移除值 
+	 	@Test 
+	 	public void testRemoveValueByKey(){ 
+	 	 	redisTemplate.boundHashOps("namehash").delete("c"); 
+	 	} 
+	//运行后再次查看集合内容： [唐僧, 悟空, 沙僧] 
+	}
